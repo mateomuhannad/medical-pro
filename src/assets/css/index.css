@@ -1,0 +1,12 @@
+.function-btn {
+    display: flex;
+    align-items: center;
+}
+
+.btn:not(:last-child) {
+    margin-right: 0rem !important;
+}
+
+.Answer {
+    cursor: 'pointer'
+}
