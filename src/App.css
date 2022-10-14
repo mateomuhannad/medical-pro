@@ -1,0 +1,57 @@
+.display-wrap {
+  min-height: 100vh;
+}
+
+.MuiTabs-flexContainer {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+body {
+  background-color: #003847 !important;
+}
+
+
+.css-15b8vjn-MuiPaper-root-MuiDrawer-paper {
+  display: flex;
+  justify-content: space-between;
+  /* background-color: #004b5f !important; */
+}
+
+
+.css-1i7d4ft-MuiPaper-root-MuiAppBar-root {
+  box-shadow: 0px 0px 1px -0px rgb(0 0 0 / 10%),
+    0px 0px 3px 0px rgb(0 0 0 / 14%),
+    0px 1px 10px 0px rgb(0 0 0 / 12%) !important;
+}
+
+.box-value {
+  margin-top: '.5rem';
+  background-color: 'rgb(74 228 134/0.1)';
+  color: "rgb(74 228 134/1)";
+  font-weight: 500;
+  font-size: "16px";
+  border-radius: "5px";
+  padding-left: '0.625rem';
+  padding-right: '0.625rem';
+}
+
+.MuiButtonBase-root {
+  background-color: rgb(0 112 142/1);
+}
+
+.MuiDrawer-paperAnchorDockedLeft {
+  background-color: #004b5f !important;
+}
+
+.MuiMenu-list {
+  background-color: #004b5f !important;
+}
+
+.css-xj9khw-MuiButtonBase-root-MuiButton-root {
+  color: #82abb7 !important;
+}
+
+a {
+  color: rgb(74 228 134/1) !important;
+}

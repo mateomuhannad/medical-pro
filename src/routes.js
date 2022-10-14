@@ -1,67 +1,53 @@
-import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
-import Maps from "views/examples/Maps.js";
-import Register from "views/examples/Register.js";
-import Login from "views/examples/Login.js";
-import Tables from "views/examples/Tables.js";
-import Patient from "views/examples/Patient.js";
-import PatientInfo from "views/examples/PatientInfo.js";
+import React from 'react'
+import { Navigate, useRoutes } from 'react-router-dom';
 
-var routes = [
-  {
-    path: "/index",
-    name: "Dashboard",
-    icon: "ni ni-tv-2 text-primary",
-    component: Index,
-    layout: "/admin"
-  },
-  {
-    path: "/patient",
-    name: "PatientManagement",
-    icon: "ni ni-planet text-blue",
-    component: Patient,
-    layout: "/admin"
-  },
-  {
-    path: "/maps",
-    name: "Maps",
-    icon: "ni ni-pin-3 text-orange",
-    component: Maps,
-    layout: "/admin"
-  },
-  {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: Profile,
-    layout: "/admin"
-  },
-  {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: Tables,
-    layout: "/admin"
-  },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
-    layout: "/auth"
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: Register,
-    layout: "/auth"
-  },
-  {
-    path: "/patientInfo",
-    name: "Patient Management",
-    component: PatientInfo,
-    layout: "/admin"
-  }
-];
-export default routes;
+// layouts
+import {
+    FullLayout, MainLayout
+} from './layouts'
+
+import Trader from './pages/traders';
+import Portfolio from './pages/portfolio';
+import Settings from './pages/settings';
+import Dashboard from './pages/dashboard';
+export default function Router() {
+
+    return useRoutes([
+        {
+            path: '/',
+            element: <MainLayout />,
+            children: [
+                { path: '/', element: <Dashboard /> },
+            ]
+        },
+        {
+            path: '/app/traders',
+            element: <MainLayout />,
+            children: [
+                { path: '/app/traders', element: <Trader /> },
+            ]
+        },
+        {
+            path: '/app/portfolio',
+            element: <MainLayout />,
+            children: [
+                { path: '/app/portfolio', element: <Portfolio /> },
+            ]
+        },
+        {
+            path: '/app/settings',
+            element: <MainLayout />,
+            children: [
+                { path: '/app/settings', element: <Settings /> },
+            ]
+        },
+        {
+            path: '/app/dashboard',
+            element: <MainLayout />,
+            children: [
+                { path: '/app/dashboard', element: <Dashboard /> },
+            ]
+        },
+        { path: '*', element: <Navigate to='/404' replace /> }
+    ])
+}
