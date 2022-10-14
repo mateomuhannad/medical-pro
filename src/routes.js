@@ -3,7 +3,7 @@ import { Navigate, useRoutes } from 'react-router-dom';
 
 // layouts
 import {
-    FullLayout, MainLayout
+    MainLayout
 } from './layouts'
 
 import Trader from './pages/traders';

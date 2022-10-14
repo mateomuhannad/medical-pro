@@ -9,13 +9,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { Typography } from '@mui/material';
-import CardMedia from '@mui/material/CardMedia';
+// import CardMedia from '@mui/material/CardMedia';
 
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
+// import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
-import DbIcon from '../../assets/css/dbIcon.svg';
+// import DbIcon from '../../assets/css/dbIcon.svg';
 import ConnectedTvIcon from '@mui/icons-material/ConnectedTv';
 import { Link } from 'react-router-dom';
 
