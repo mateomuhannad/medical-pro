@@ -55,3 +55,11 @@ body {
 a {
   color: rgb(74 228 134/1) !important;
 }
+
+fieldset {
+  border: none !important
+}
+
+.MuiSelect-iconOutlined {
+  display: none !important;
+}

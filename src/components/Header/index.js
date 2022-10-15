@@ -16,7 +16,8 @@ import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
 import UserImg from '../../assets/img/team-1-800x800.jpg';
-
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 import InputBase from '@mui/material/InputBase';
 import PhoneIcon from '@mui/icons-material/Phone';
 
@@ -85,6 +86,15 @@ export default function MiniDrawer() {
         setSideOpen(!sideOpen);
     }
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
     const [modelopen, setModelOpen] = React.useState(false);
     const handleModelOpen = () => setModelOpen(!modelopen);
     const [fullWidthOne, setFullWidthOne] = React.useState(true);
@@ -133,9 +143,25 @@ export default function MiniDrawer() {
                                 </Avatar>
                             }
                             title={<Typography gutterBottom component="div" >
-                                Brandy Hand
+                                User Name
                             </Typography>}
+                            onClick={handleClick}
                         />
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem onClick={handleClose}>Realized Gains</MenuItem>
+                            <MenuItem onClick={handleClose}>Unrealized Gains</MenuItem>
+                            <MenuItem onClick={handleClose}>Setting</MenuItem>
+                            <MenuItem onClick={handleClose}>My Profile</MenuItem>
+                            <MenuItem onClick={handleClose}>Log Out</MenuItem>
+                        </Menu>
                     </Stack>
                 </Toolbar>
                 {sideOpen && <><MobileSide />
