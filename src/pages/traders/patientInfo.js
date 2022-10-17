@@ -1,4 +1,8 @@
 import * as React from 'react';
+import VitalsTable from './vitalsTable';
+import Editor from './editor';
+
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Button, Grid, TextField, Dialog } from '@mui/material';
@@ -13,19 +17,20 @@ import { Stack } from '@mui/system';
 
 import UserImg from '../../assets/img/team-1-800x800.jpg';
 
+import dayjs from 'dayjs';
 
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import SubjectIcon from '@mui/icons-material/Subject';
 import NoteIcon from '@mui/icons-material/Note';
-import SaveIcon from '@mui/icons-material/Save';
 import PreviewIcon from '@mui/icons-material/Preview';
 import SendIcon from '@mui/icons-material/Send';
-import BackupTableIcon from '@mui/icons-material/BackupTable';
 import { useTheme } from '@mui/material/styles';
 import FormControl from '@mui/material/FormControl';
 import Card from '@mui/material/Card';
-
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 // import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -71,33 +76,34 @@ function getPhStyles(name, PharmacieNames, theme) {
 const Traders = () => {
     const theme = useTheme();
 
-    const [contactInfo, setContactInfo] = React.useState(10);
+    const [contactInfo, setContactInfo] = useState(10);
 
     const contactChange = (event) => {
         setContactInfo(event.target.value);
     };
 
-    const [insoneNum, setInsoneNum] = React.useState(1);
+    const [insoneNum, setInsoneNum] = useState(1);
 
     const insOne = (event) => {
         setInsoneNum(event.target.value);
     };
 
-    const [instowNum, setInstowNum] = React.useState(1);
+    const [instowNum, setInstowNum] = useState(1);
 
     const instow = (event) => {
         setInstowNum(event.target.value);
     };
 
-    const [insthreeNum, setInsthreeNum] = React.useState(1);
+    const [insthreeNum, setInsthreeNum] = useState(1);
 
     const insthree = (event) => {
         setInsthreeNum(event.target.value);
     };
 
-    const [weightValue, setWeightValue] = React.useState(222);
-    const [fitValue, setFitValue] = React.useState(3);
-    const [inchValue, setInchValue] = React.useState(4);
+    const [weightValue, setWeightValue] = useState(222);
+    const [weightBlue, setWeightBlue] = useState(false);
+    const [fitValue, setFitValue] = useState(3);
+    const [inchValue, setInchValue] = useState(4);
     const names = [
         'Allergy1',
         'Allergy2',
@@ -114,8 +120,8 @@ const Traders = () => {
         'Pharmacy4',
     ]
 
-    const [personName, setPersonName] = React.useState([]);
-    const [phramacieperson, setPhramacieperson] = React.useState([]);
+    const [personName, setPersonName] = useState([]);
+    const [phramacieperson, setPhramacieperson] = useState([]);
 
     const AllergiesChange = (event) => {
         const {
@@ -135,29 +141,8 @@ const Traders = () => {
         );
     }
 
-    const [CrclInfo, setCrclInfo] = React.useState([1]);
 
-    const CrclChange = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setCrclInfo(
-            typeof value === 'string' ? value.split(',') : value,
-        );
-    };
-
-    const [BmiInfo, setBmiInfo] = React.useState([1]);
-
-    const bmiChange = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setBmiInfo(
-            typeof value === 'string' ? value.split(',') : value,
-        );
-    };
-
-    const [locationValue, setLocation] = React.useState([1]);
+    const [locationValue, setLocation] = useState([1]);
 
     const locationChange = (event) => {
         const {
@@ -168,8 +153,8 @@ const Traders = () => {
         );
     };
 
-    const [oldnoteValue, setOldnote] = React.useState([1]);
-
+    const [oldnoteValue, setOldnote] = useState([1]);
+    const [heightBlue, setHeightBlue] = useState(false);
     const oldnoteChange = (event) => {
         const {
             target: { value },
@@ -179,20 +164,38 @@ const Traders = () => {
         );
     };
 
-    const [complateValue, setComplate] = React.useState([1]);
+    const [emergencyInfo, setEmergencyInfo] = useState([1]);
 
-    const complateChange = (event) => {
+    const emergencyChange = (event) => {
         const {
             target: { value },
         } = event;
-        setComplate(
+        setEmergencyInfo(
             typeof value === 'string' ? value.split(',') : value,
         );
     };
 
-    const [modelopen, setModelOpen] = React.useState(false);
-    const handleModelOpen = () => setModelOpen(!modelopen);
+    const [dateValue, setDateValue] = useState(dayjs('2014-08-18T21:11:54'));
 
+    const dateChange = (newValue) => {
+        setDateValue(newValue);
+    };
+
+    const [providerInfo, setProviderInfo] = useState([1]);
+
+    const providerChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setProviderInfo(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
+    const [modelopen, setModelOpen] = useState(false);
+    const [editorstate, setModelEditor] = useState(false);
+    const handleModelOpen = () => setModelOpen(!modelopen);
+    const handleEditor = () => setModelEditor(!editorstate);
 
     const questionAnswer = [
         {
@@ -224,8 +227,33 @@ const Traders = () => {
             'answer': 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum tempore cum natus enim eveniet, soluta nesciunt voluptatibus ipsa repudiandae. Necessitatibus architecto sed ut id magnam optio facere velit, eveniet quod.'
         }
     ]
-    return (
 
+    const [bmi, setBmi] = useState();
+    const [info, setInfo] = useState();
+
+    useEffect(() => {
+        console.log(Math.floor(weightValue * 0.454), '====', Math.floor((fitValue * 30.48) + (inchValue * 2.54)))
+        let val = (
+            [Number(Math.floor(weightValue * 0.454)) / Number(Math.floor((fitValue * 30.48) + (inchValue * 2.54))) / Number(Math.floor((fitValue * 30.48) + (inchValue * 2.54)))] * 10000
+        ).toFixed(1);
+        setBmi(val);
+        if (val < 18.5) {
+            setInfo("UnderWeight");
+        } else if (val > 18.5 && val <= 24.9) {
+            setInfo("Healthy");
+        } else if (val > 24.9 && val < 30) {
+            setInfo("Overweight");
+        } else if (val > 30 && val < 40) {
+            setInfo("Obesity");
+        } else if (val > 40) {
+            setInfo("Morbid obesity");
+        } else {
+            setInfo("Obese");
+        }
+
+    }, [weightValue, fitValue, inchValue])
+
+    return (
         <>
             <Box component="main" sx={{ flexGrow: 1, paddingLeft: 2 }}>
                 <Grid container spacing={7}>
@@ -251,9 +279,6 @@ const Traders = () => {
                                         <Typography sx={{ color: '#31b8df' }}>DOB:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}>11.24.1950</Typography>
                                     </Stack>
                                     <Stack direction={'row'}>
-                                        <Typography sx={{ color: '#31b8df' }}>Demo:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}>58 y/o white male</Typography>
-                                    </Stack>
-                                    <Stack direction={'row'}>
                                         <Typography sx={{ color: '#31b8df' }}>Contact:</Typography>
                                         <Select
                                             labelId="demo-simple-select-label"
@@ -263,13 +288,28 @@ const Traders = () => {
                                             MenuProps={MenuProps}
                                             sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
                                         >
+                                            <MenuItem value={30}>M: (285) 592-2235</MenuItem>
                                             <MenuItem value={10}>H: (859) 647-2947</MenuItem>
                                             <MenuItem value={20}>W: 72342342342</MenuItem>
-                                            <MenuItem value={30}>M: (285) 592-2235</MenuItem>
                                         </Select>
                                     </Stack>
                                     <Stack direction={'row'}>
-                                        <Typography sx={{ color: '#31b8df' }}>Emergency:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}>Select preferred contact</Typography>
+                                        <Typography sx={{ color: '#31b8df' }}>Emergency:</Typography>
+                                        <Typography sx={{ color: 'rgb(130 171 183/1)' }}>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={emergencyInfo}
+                                                onChange={emergencyChange}
+                                                MenuProps={MenuProps}
+                                                label="Select preferred contact"
+                                                sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
+                                            >
+                                                <MenuItem value={1}> 706-678-2255 (father)</MenuItem>
+                                                <MenuItem value={2}> 706-678-2255 (mother)</MenuItem>
+                                                <MenuItem value={3}> 706-678-2255 (brother)</MenuItem>
+                                            </Select>
+                                        </Typography>
                                     </Stack>
                                 </Stack>
                             }
@@ -401,89 +441,91 @@ const Traders = () => {
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Providers:
-                                John Smith, M.D. (Internal Medicine)
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={providerInfo}
+                                    onChange={providerChange}
+                                    MenuProps={MenuProps}
+                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', width: '300px', p: 0, margin: 0 }}
+                                >
+                                    <MenuItem value={1}> John Smith, M.D. (Internal Medicine)</MenuItem>
+                                    <MenuItem value={2}> Zack Jones, M.D. (Cardiology)</MenuItem>
+                                    <MenuItem value={3}> CSRA (home health)</MenuItem>
+                                    <MenuItem value={4}>Care South (hospice)</MenuItem>
+                                </Select>
+
                             </Typography>
                         </Stack>
                     </Grid>
                     <Grid item lg={3} md={6} xs={12} >
                         <Stack sx={{ paddingTop: 4 }} p={2}>
-                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
+                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex', flexDirection: 'row' }}>
                                 Weight:
-                                <TextField
-                                    id="outlined-number"
-                                    type="number"
-                                    size="small"
-                                    value={weightValue}
-                                    onChange={(e) => { setWeightValue(e.target.value) }}
-                                    sx={{ width: '100px', marginTop: -1 }}
-                                    InputLabelProps={{
-                                    }}
-                                />lbs /
-                                ({Math.floor(weightValue * 0.454)} kg)
+                                {weightBlue ?
+                                    <>
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            size="small"
+                                            value={weightValue}
+                                            onChange={(e) => { setWeightValue(e.target.value) }}
+                                            sx={{ width: '100px', marginTop: -1 }}
+                                            InputLabelProps={{
+                                            }}
+                                            onBlur={() => { setWeightBlue(false) }}
+                                        />lbs</>
+                                    :
+                                    <Typography onClick={() => { setWeightBlue(true) }}>
+                                        {weightValue} lbs / ({Math.floor(weightValue * 0.454)} kg)
+                                    </Typography>
+                                }
                             </Typography>
-                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', marginTop: 2 }}>
+                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', marginTop: 2, display: 'flex', flexDirection: 'row' }}>
                                 Height:
-                                <TextField
-                                    id="outlined-number"
-                                    type="number"
-                                    size="small"
-                                    value={fitValue}
-                                    onChange={(e) => { setFitValue(e.target.value) }}
-                                    sx={{ width: '70px', marginTop: -1 }}
+                                {heightBlue ?
+                                    <>
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            size="small"
+                                            value={fitValue}
+                                            onChange={(e) => { setFitValue(e.target.value) }}
+                                            sx={{ width: '70px', marginTop: -1 }}
+                                            onBlur={() => { setHeightBlue(false) }}
 
-                                />ft
-                                <TextField
-                                    id="outlined-number"
-                                    type="number"
-                                    size="small"
-                                    value={inchValue}
-                                    onChange={(e) => { setInchValue(e.target.value) }}
-                                    sx={{ width: '60px', marginTop: -1 }}
-                                />in /
-                                ({Math.floor((fitValue * 30.48) + (inchValue * 2.54))} cm)
+                                        />ft
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            size="small"
+                                            value={inchValue}
+                                            onChange={(e) => { setInchValue(e.target.value) }}
+                                            sx={{ width: '60px', marginTop: -1 }}
+                                            onBlur={() => { setHeightBlue(false) }}
+                                        />in</> :
+                                    <>
+                                        <Typography onClick={() => { setHeightBlue(true) }}>
+                                            &nbsp; &nbsp;  {fitValue} ft
+                                        </Typography>
+                                        <Typography onClick={() => { setHeightBlue(true) }}>
+                                            &nbsp; {inchValue} in
+                                        </Typography>&nbsp; ({Math.floor((fitValue * 30.48) + (inchValue * 2.54))} cm)
+                                    </>
+                                }
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 CrCl:
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={CrclInfo}
-                                    onChange={CrclChange}
-                                    MenuProps={MenuProps}
-                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
-                                >
-                                    <MenuItem value={1}> Stage 1 CrCl {'>'} 90</MenuItem>
-                                    <MenuItem value={2}> Stage 2 CrCl 60-89</MenuItem>
-                                    <MenuItem value={3}> Stage 3 CrCl 30-59</MenuItem>
-                                    <MenuItem value={4}> Stage 4 CrCl 15-29</MenuItem>
-                                    <MenuItem value={5}> Stage 5 CrCl {'<'}15</MenuItem>
-                                    <MenuItem value={6}> Stage 6 End Stage Renal Disease</MenuItem>
-                                </Select>
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
-                                BMI:
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={BmiInfo}
-                                    onChange={bmiChange}
-                                    MenuProps={MenuProps}
-                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
-                                >
-                                    <MenuItem value={1}> Underweight (R63.6) – BMI {'<'}19 </MenuItem>
-                                    <MenuItem value={2}> Ideal – 19 - 24</MenuItem>
-                                    <MenuItem value={3}> Overweight (E66.3) – BMI 25 - 30</MenuItem>
-                                    <MenuItem value={4}> Obesity (E66.09) – BMI 30 - 40</MenuItem>
-                                    <MenuItem value={5}> Morbid obesity (E66.01) – BMI {'>'} 40</MenuItem>
-
-                                </Select>
+                                BMI:&nbsp;&nbsp;{bmi}&nbsp;&nbsp;{info}
                             </Typography>
                         </Stack>
                     </Grid>
                 </Grid>
                 <Grid container spacing={1} p={2}>
                     <Grid item lg={9} md={8} xs={12} >
-                        <Box sx={{ border: '1px solid rgb(0 75 95/1)', display: 'flex', justifyContent: 'center', alignItems: 'center' }} p={2}>
+                        <Box sx={{ border: '1px solid rgb(0 75 95/1)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }} p={2}>
                             <Stack direction={'row'} spacing={1} justifyContent={{ xs: 'space-between' }} flexWrap={{ xs: 'wrap' }}>
                                 <Button variant="outlined" startIcon={<PinDropIcon />}>
                                     <Select
@@ -521,36 +563,21 @@ const Traders = () => {
 
                                     </Select>
                                 </Button>
-                                <Button variant="outlined" startIcon={<NoteIcon />} onClick={handleModelOpen} >TYPE OF NOTE</Button>
-                                <Button variant="outlined" startIcon={<SaveIcon />} >
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        value={complateValue}
-                                        onChange={complateChange}
-                                        MenuProps={LocationTool}
-                                        sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', width: 180, p: 0, margin: 0 }}
-                                    >
-                                        <MenuItem value={1}>SAVE COMPLATE </MenuItem>
-                                        <MenuItem value={2}>SAVE INCOMPLATE</MenuItem>
-
-                                    </Select>
-                                </Button>
+                                <Button variant="outlined" startIcon={<NoteIcon />} onClick={handleEditor} >Note Type</Button>
                                 <Button variant="outlined" startIcon={<PreviewIcon />} onClick={handleModelOpen} >PREVIEW</Button>
                                 <Button variant="outlined" startIcon={<SendIcon />} >SEND</Button>
-                                <Button variant="outlined" startIcon={<BackupTableIcon />} >TEMPLATE</Button>
-                                {/* <Button variant="outlined" startIcon={<CalendarMonthIcon />} sx={{ height: '40px' }}>
+                                <Button variant="outlined" sx={{ height: '40px' }}>
                                     <LocalizationProvider dateAdapter={AdapterDayjs} >
-                                        <DatePicker
+                                        <DateTimePicker
                                             value={dateValue}
-                                            onChange={(newValue) => {
-                                                setDatevalue(newValue);
-                                            }}
-                                            padding={0}
-                                            renderInput={(params) => <TextField sx={{ width: '160px', padding: 0 }} {...params} />}
+                                            onChange={dateChange}
+                                            renderInput={(params) => <TextField {...params} />}
                                         />
                                     </LocalizationProvider>
-                                </Button> */}
+                                </Button>
+                            </Stack>
+                            <Stack paddingTop={1}>
+                                <VitalsTable />
                             </Stack>
                         </Box>
                         <Box sx={{ marginTop: 4 }} >
@@ -558,15 +585,15 @@ const Traders = () => {
                                 <Grid container spacing={1}>
                                     <Grid item lg={3} md={4} xs={12} >
                                         <Box sx={{ border: '1px solid rgb(0 75 95/1)' }} p={2} >
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Chief Complaints</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>History of Present Illness</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Past Medical History</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Past Surgical History</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Medications</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Social History</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Family History</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Review of System</Typography>
-                                            <Typography variant='h5' mb={2} sx={{ cursor: 'pointer' }}>Physical Exam</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Chief Complaints</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>History of Present Illness</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Past Medical History</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Past Surgical History</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Medications</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Social History</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Family History</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Review of System</Typography>
+                                            <Typography variant='h6' mb={2} sx={{ cursor: 'pointer' }}>Physical Exam</Typography>
                                         </Box>
                                     </Grid>
                                     <Grid item lg={9} md={8} xs={12} >
@@ -626,7 +653,14 @@ const Traders = () => {
                     </Stack>
                 </Card>
             </Dialog>
-
+            <Dialog
+                open={editorstate}
+                onClose={handleEditor}
+            >
+                <Card sx={{ bgcolor: '#013644', border: 'none', overflow: 'auto' }}>
+                    <Editor />
+                </Card>
+            </Dialog>
         </>
     );
 }

@@ -125,7 +125,7 @@ export default function MiniDrawer() {
                             alt="Live from space album cover"
                             onClick={() => { window.location.href = "" }}
                         /> */}
-                        MEDICAL PROJECT
+                        let's discuss tele my id is mat2o0612
                     </Typography>
                     <Stack spacing={2} direction="row">
                         {/* {!sideOpen && <NotificationsIcon sx={{ cursor: 'pointer' }} onClick={handleModelOpen} />} */}
@@ -171,7 +171,6 @@ export default function MiniDrawer() {
                         marginTop: -27
                     }} /></>}
                 <Dialog
-                    fullWidth={'fullwidth'}
                     maxWidth={'xs'}
                     open={modelopen}
                     onClose={handleModelOpen}
