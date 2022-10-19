@@ -74,6 +74,14 @@ fieldset {
   color: rgb(130 171 183/1) !important;
 }
 
-.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+.css-ufm59s {
+  padding: 0px !important;
+}
+
+.css-ufm59s.css-ufm59s.css-ufm59s {
   padding-right: 0px !important;
+}
+
+.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding: 0px !important;
 }
