@@ -164,6 +164,16 @@ const Traders = () => {
         );
     };
 
+    const [televistInfo, setTelevistInfo] = useState([1]);
+    const televistChange = (event) => {
+        const {
+            target: { value },
+        } = event;
+        setTelevistInfo(
+            typeof value === 'string' ? value.split(',') : value,
+        );
+    };
+
     const [emergencyInfo, setEmergencyInfo] = useState([1]);
 
     const emergencyChange = (event) => {
@@ -174,8 +184,8 @@ const Traders = () => {
             typeof value === 'string' ? value.split(',') : value,
         );
     };
-
-    const [dateValue, setDateValue] = useState(dayjs('2014-08-18T21:11:54'));
+    let current = new Date();
+    const [dateValue, setDateValue] = useState(dayjs(current.toLocaleString()));
 
     const dateChange = (newValue) => {
         setDateValue(newValue);
@@ -230,9 +240,11 @@ const Traders = () => {
 
     const [bmi, setBmi] = useState();
     const [info, setInfo] = useState();
+    const [SrCr, setSrCr] = useState(1);
+    const [CrCl, setCrCl] = useState('');
+    const [crclInfo, setCrclInfo] = useState();
 
     useEffect(() => {
-        console.log(Math.floor(weightValue * 0.454), '====', Math.floor((fitValue * 30.48) + (inchValue * 2.54)))
         let val = (
             [Number(Math.floor(weightValue * 0.454)) / Number(Math.floor((fitValue * 30.48) + (inchValue * 2.54))) / Number(Math.floor((fitValue * 30.48) + (inchValue * 2.54)))] * 10000
         ).toFixed(1);
@@ -251,7 +263,27 @@ const Traders = () => {
             setInfo("Obese");
         }
 
-    }, [weightValue, fitValue, inchValue])
+        let crclInfoVal = eval((weightValue * (140 - 71)) / (SrCr * 72));
+        setCrCl(crclInfoVal);
+
+        if (crclInfoVal < 15) {
+            // setInfo("UnderWeight");
+        } else if (crclInfoVal > 15 && crclInfoVal <= 29) {
+            // setInfo("Healthy");
+        } else if (crclInfoVal > 30 && crclInfoVal < 59) {
+            // setInfo("Overweight");
+        } else if (crclInfoVal > 60 && crclInfoVal < 89) {
+            // setInfo("Obesity");
+        } else if (crclInfoVal > 90) {
+            // setInfo("Morbid obesity");
+        } else {
+            setCrclInfo("End Stage Renal Disease");
+        }
+
+
+    }, [weightValue, fitValue, inchValue, SrCr])
+
+
 
     return (
         <>
@@ -276,10 +308,11 @@ const Traders = () => {
                                         Brandy Hand (71 y/o WM)
                                     </Typography>
                                     <Stack direction={'row'}>
-                                        <Typography sx={{ color: '#31b8df' }}>DOB:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}>11.24.1950</Typography>
+                                        <Typography sx={{ color: '#31b8df' }}>DOB:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;11.24.1950</Typography>
                                     </Stack>
                                     <Stack direction={'row'}>
                                         <Typography sx={{ color: '#31b8df' }}>Contact:</Typography>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
@@ -381,7 +414,7 @@ const Traders = () => {
                         <Stack sx={{ paddingTop: 4 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Allergies:
-                                <FormControl sx={{ width: 300, mt: 3, height: 50, margin: '0px' }}>
+                                <FormControl sx={{ width: 300, mt: 3, margin: '0px' }}>
                                     <Select
                                         multiple
                                         displayEmpty
@@ -411,7 +444,7 @@ const Traders = () => {
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Pharmacies:
-                                <FormControl sx={{ width: 270, mt: 3, height: 50, margin: '0px' }}>
+                                <FormControl sx={{ width: 270, mt: 3, margin: '0px' }}>
                                     <Select
                                         multiple
                                         displayEmpty
@@ -481,7 +514,7 @@ const Traders = () => {
                                     </Typography>
                                 }
                             </Typography>
-                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', marginTop: 2, display: 'flex', flexDirection: 'row' }}>
+                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex', flexDirection: 'row' }}>
                                 Height:
                                 {heightBlue ?
                                     <>
@@ -514,8 +547,30 @@ const Traders = () => {
                                     </>
                                 }
                             </Typography>
+                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex', flexDirection: 'row' }}>
+                                SrCr:
+                                {weightBlue ?
+                                    <>
+                                        <TextField
+                                            id="outlined-number"
+                                            type="number"
+                                            size="small"
+                                            value={SrCr}
+                                            onChange={(e) => { setSrCr(e.target.value) }}
+                                            sx={{ width: '100px', marginTop: -1 }}
+                                            InputLabelProps={{
+                                            }}
+                                            onBlur={() => { setWeightBlue(false) }}
+                                        />mg/dl</>
+                                    :
+                                    <Typography onClick={() => { setWeightBlue(true) }}>
+                                        {SrCr} mg/dl
+                                    </Typography>
+                                }
+                            </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 CrCl:
+                                {CrCl} &nbsp;{crclInfo}
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 BMI:&nbsp;&nbsp;{bmi}&nbsp;&nbsp;{info}
@@ -526,7 +581,7 @@ const Traders = () => {
                 <Grid container spacing={1} p={2}>
                     <Grid item lg={9} md={8} xs={12} >
                         <Box sx={{ border: '1px solid rgb(0 75 95/1)', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }} p={2}>
-                            <Stack direction={'row'} spacing={1} justifyContent={{ xs: 'space-between' }} flexWrap={{ xs: 'wrap' }}>
+                            <Stack direction={'row'} spacing={1} justifyContent={{ xs: 'space-between' }} flexWrap={{ xs: 'wrap' }} sx={{ width: '100%' }}>
                                 <Button variant="outlined" startIcon={<PinDropIcon />}>
                                     <Select
                                         labelId="demo-simple-select-label"
@@ -563,7 +618,23 @@ const Traders = () => {
 
                                     </Select>
                                 </Button>
-                                <Button variant="outlined" startIcon={<NoteIcon />} onClick={handleEditor} >Note Type</Button>
+                                <Button variant="outlined" startIcon={<NoteIcon />}  >
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={televistInfo}
+                                        onChange={televistChange}
+                                        MenuProps={LocationTool}
+                                        sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', width: 130, p: 0, margin: 0 }}
+                                    >
+                                        <MenuItem value={1}>Progress Note </MenuItem>
+                                        <MenuItem value={2}>history and Physical</MenuItem>
+                                        <MenuItem value={3}> consult note</MenuItem>
+                                        <MenuItem value={4}>correspondence</MenuItem>
+                                        <MenuItem value={5}>Televisit</MenuItem>
+
+                                    </Select>
+                                </Button>
                                 <Button variant="outlined" startIcon={<PreviewIcon />} onClick={handleModelOpen} >PREVIEW</Button>
                                 <Button variant="outlined" startIcon={<SendIcon />} >SEND</Button>
                                 <Button variant="outlined" sx={{ height: '40px' }}>
@@ -572,11 +643,12 @@ const Traders = () => {
                                             value={dateValue}
                                             onChange={dateChange}
                                             renderInput={(params) => <TextField {...params} />}
+                                            defaultCalendarMonth="2017-05-24T10:30"
                                         />
                                     </LocalizationProvider>
                                 </Button>
                             </Stack>
-                            <Stack paddingTop={1}>
+                            <Stack paddingTop={1} sx={{ width: '100%' }}>
                                 <VitalsTable />
                             </Stack>
                         </Box>
@@ -612,7 +684,7 @@ const Traders = () => {
                         </Box>
                     </Grid>
                 </Grid>
-            </Box>
+            </Box>ssss
 
             <Dialog
                 open={modelopen}

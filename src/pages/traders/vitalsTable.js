@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -11,29 +11,31 @@ import { Button, MenuItem, Select, TextField, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 
 const rowStyle = [
-    { minWidth: '150px', border: '1px solid', borderColor: "#90caf980", borderRadius: 1 }
+    { width: '150px', border: '1px solid', borderColor: "#90caf980", borderRadius: 1 }
 ]
 const columnStyle = [
-    { width: '60px', border: '1px solid', borderColor: "#90caf980", borderRadius: 1 }
+    { width: '65px', border: '1px solid', borderColor: "#90caf980", borderRadius: 1 }
 ]
 
 let rows = [];
 export default function BasicTable() {
     const [state, setState] = useState(false);
+    let current = new Date();
+    let current_day = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
+    let current_time = current.getHours() + ':' + current.getMinutes();
     const [vitals, setVitals] = useState({
-        date: '2022-09-26',
-        time: '16:02',
+        date: current_day,
+        time: current_time,
         BpOne: '0',
         BpTwo: '0',
         Pluse: '0',
         resp: '0',
         Temp: '0',
-        ftHeight: '0',
-        inHeight: '0',
-        weightSetVal: '0',
+        ftHeight: '3',
+        inHeight: '4',
+        weightSetVal: '222',
         BMI: '0',
-        PluseOX: '0'
-
+        PluseOX: '96'
     });
 
     const rowPush = () => {
@@ -59,9 +61,18 @@ export default function BasicTable() {
         rows.push(vitals);
     }
 
+    useEffect(() => {
+        let val = (
+            [Number(Math.floor(vitals.weightSetVal * 0.454)) / Number(Math.floor((vitals.ftHeight * 30.48) + (vitals.inHeight * 2.54))) / Number(Math.floor((vitals.ftHeight * 30.48) + (vitals.inHeight * 2.54)))] * 10000
+        ).toFixed(1);
+
+        setVitals({ ...vitals, BMI: val });
+    }, [vitals.weightSetVal, vitals.ftHeight, vitals.inHeight])
+
+
     return (
-        <TableContainer component={Paper} sx={{ width: '100%', minWidth: '1171px', maxWidth: 1000 }}>
-            <Table sx={{ bgcolor: '#003847' }}>
+        <TableContainer component={Paper} sx={{ width: '100%' }}>
+            <Table sx={{ width: '100%', bgcolor: '#003847' }}>
                 <TableHead>
                     <TableRow >
                         <TableCell align="center" sx={{ fontSize: 30, cursor: 'pointer' }} onClick={rowPush}>{state ? '-' : '+'}</TableCell>
@@ -83,10 +94,11 @@ export default function BasicTable() {
                             <TableCell component="th" scope="row" sx={{ display: 'flex' }}>
                                 <Button variant="outlined" onClick={columnPush}> SAVE</Button>
                                 <Stack spacing={1} >
-                                    <TextField id="outlined-number" onChange={(e) => { setVitals({ ...vitals, date: e.target.value }) }} type="time" size="small" sx={rowStyle} />
-                                    <TextField id="outlined-number" onChange={(e) => { setVitals({ ...vitals, time: e.target.value }) }} type="date" size="small" sx={rowStyle} />
+                                    <TextField id="outlined-number" defaultValue={current_time} onChange={(e) => { setVitals({ ...vitals, date: e.target.value }) }} type="time" size="small" sx={rowStyle} />
+                                    <TextField id="outlined-number" defaultValue={current_day} onChange={(e) => { setVitals({ ...vitals, time: e.target.value }) }} type="date" size="small" sx={rowStyle} />
                                 </Stack>
                             </TableCell>
+
                             <TableCell align="center" >
                                 <Stack spacing={1}>
                                     <TextField value={vitals.BpOne} onChange={(e) => { setVitals({ ...vitals, BpOne: e.target.value }) }} size="small" sx={columnStyle} />
@@ -135,7 +147,7 @@ export default function BasicTable() {
                                     </Select>
                                 </Stack>
                             </TableCell>
-                            <TableCell align="center"><TextField value={vitals.BMI} onChange={(e) => { setVitals({ ...vitals, BMI: e.target.value }) }} size="small" sx={columnStyle} /></TableCell>
+                            <TableCell align="center"><TextField value={vitals.BMI} size="small" sx={columnStyle} /></TableCell>
                             <TableCell align="center">
                                 <Stack spacing={1} direction={'row'}>
                                     <TextField value={vitals.PluseOX} onChange={(e) => { setVitals({ ...vitals, PluseOX: e.target.value }) }} size="small" sx={columnStyle} />

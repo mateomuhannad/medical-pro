@@ -73,3 +73,7 @@ fieldset {
 .css-1k3ibsw-MuiButtonBase-root-MuiIconButton-root {
   color: rgb(130 171 183/1) !important;
 }
+
+.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  padding-right: 0px !important;
+}

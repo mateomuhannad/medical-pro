@@ -15,7 +15,7 @@ import MobileSide from '../Sidebar/mobile';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import Avatar from '@mui/material/Avatar';
-import UserImg from '../../assets/img/team-1-800x800.jpg';
+import UserImg from '../../assets/img/team-4-800x800.jpg';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import InputBase from '@mui/material/InputBase';
@@ -125,7 +125,7 @@ export default function MiniDrawer() {
                             alt="Live from space album cover"
                             onClick={() => { window.location.href = "" }}
                         /> */}
-                        let's discuss tele my id is mat2o0612
+                        Medical Pro
                     </Typography>
                     <Stack spacing={2} direction="row">
                         {/* {!sideOpen && <NotificationsIcon sx={{ cursor: 'pointer' }} onClick={handleModelOpen} />} */}
@@ -143,7 +143,7 @@ export default function MiniDrawer() {
                                 </Avatar>
                             }
                             title={<Typography gutterBottom component="div" >
-                                User Name
+                                Jhon Mateo
                             </Typography>}
                             onClick={handleClick}
                         />
