@@ -263,7 +263,7 @@ const Traders = () => {
             setInfo("Obese");
         }
 
-        let crclInfoVal = eval((weightValue * (140 - 71)) / (SrCr * 72));
+        let crclInfoVal = (weightValue * (140 - 71)) / (SrCr * 72);
         setCrCl(crclInfoVal);
 
         if (crclInfoVal < 15) {

@@ -65,9 +65,11 @@ export default function BasicTable() {
         let val = (
             [Number(Math.floor(vitals.weightSetVal * 0.454)) / Number(Math.floor((vitals.ftHeight * 30.48) + (vitals.inHeight * 2.54))) / Number(Math.floor((vitals.ftHeight * 30.48) + (vitals.inHeight * 2.54)))] * 10000
         ).toFixed(1);
-
-        setVitals({ ...vitals, BMI: val });
-    }, [vitals.weightSetVal, vitals.ftHeight, vitals.inHeight])
+        setVitals((prevState) => ({
+            ...prevState,
+            BMI: val
+        }))
+    }, [vitals.weightSetVal, vitals.ftHeight, vitals.inHeight]);
 
 
     return (
