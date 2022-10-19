@@ -85,3 +85,13 @@ fieldset {
 .css-v3zyv7-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
   padding: 0px !important;
 }
+
+.css-1gccf9k {
+  display: flex;
+  flex-direction: row-reverse;
+  color: #90caf9;
+}
+
+svg {
+  color: #90caf9 !important;
+}
