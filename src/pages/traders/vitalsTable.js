@@ -23,6 +23,7 @@ export default function BasicTable() {
     let current = new Date();
     let current_day = current.getFullYear() + '-' + (current.getMonth() + 1) + '-' + current.getDate();
     let current_time = current.getHours() + ':' + current.getMinutes();
+    console.log(current_day, "current")
     const [vitals, setVitals] = useState({
         date: current_day,
         time: current_time,
