@@ -18,7 +18,8 @@ import {
     Typography,
     Select,
     MenuItem,
-    FormControl
+    FormControl,
+    Slider
 } from '@mui/material';
 
 import PinDropIcon from '@mui/icons-material/PinDrop';
@@ -36,6 +37,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Card from '@mui/material/Card';
 import { Stack } from '@mui/system';
 import UserImg from '../../assets/img/team-1-800x800.jpg';
+import ICD10code from '../../assets/img/ICD10code.png';
 import dayjs from 'dayjs';
 
 
@@ -65,14 +67,6 @@ const AllergieNames = [
     'Allergy5',
     'Allergy6',
 ];
-
-const providerNames = [
-    'John Smith, M.D. (Internal Medicine)',
-    'Zack Jones, M.D. (Cardiology)',
-    'CSRA (home health)',
-    'Care South (hospice)'
-
-]
 
 const phramacieNames = [
     'Pharmacies1',
@@ -196,16 +190,10 @@ const Traders = () => {
         setDateValue(newValue);
     };
 
-    const [providerInfo, setProviderInfo] = useState([]);
+    const [providerInfo, setProviderInfo] = useState([1]);
 
     const providerChange = (event) => {
-        const {
-            target: { value },
-        } = event;
-        setProviderInfo(
-            // On autofill we get a stringified value.
-            typeof value === 'string' ? value.split(',') : value,
-        );
+        setProviderInfo(event.target.value);
     };
 
     const [modelopen, setModelOpen] = useState(false);
@@ -273,18 +261,18 @@ const Traders = () => {
         setCrCl(crclInfoVal);
 
         if (crclInfoVal < 15) {
-            setCrclInfo(" CKD S5(N18.5)");
+            setCrclInfo(" CKD S5 (N18.5)");
         } else if (crclInfoVal > 15 && crclInfoVal <= 29) {
-            setCrclInfo(" CKD S4(N18.4)");
+            setCrclInfo(" CKD S4 (N18.4)");
         } else if (crclInfoVal > 30 && crclInfoVal < 44) {
-            setCrclInfo(" CKD S3b(N18.32)");
+            setCrclInfo(" CKD S3b (N18.32)");
         } else if (crclInfoVal > 45 && crclInfoVal < 59) {
-            setCrclInfo(" CKD S3A(N18.31)");
+            setCrclInfo(" CKD S3A (N18.31)");
         } else if (crclInfoVal > 60 && crclInfoVal < 89) {
-            setCrclInfo(" CKD S2(N18.2) ");
+            setCrclInfo(" CKD S2 (N18.2) ");
 
         } else if (crclInfoVal > 90) {
-            setCrclInfo(" CKD S1(N18.1)");
+            setCrclInfo(" CKD S1 (N18.1)");
         } else {
             setCrclInfo("End Stage Renal Disease");
         }
@@ -304,6 +292,23 @@ const Traders = () => {
 
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
+
+
+
+    const [bmianchorel, setBmianchorel] = React.useState(null);
+
+    const bmihandleClick = (event) => {
+        setBmianchorel(event.currentTarget);
+    };
+
+    const bmihandleClose = () => {
+        setBmianchorel(null);
+    };
+
+    const bmiopen = Boolean(bmianchorel);
+    const BMIid = bmiopen ? 'simple-popover' : undefined;
+
+
 
     const [addstate, setAddstate] = useState(true);
     const addHandleClick = () => {
@@ -363,9 +368,9 @@ const Traders = () => {
                                                 label="Select preferred contact"
                                                 sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
                                             >
-                                                <MenuItem value={1}> 706-678-2255 (father)</MenuItem>
-                                                <MenuItem value={2}> 706-678-2255 (mother)</MenuItem>
-                                                <MenuItem value={3}> 706-678-2255 (brother)</MenuItem>
+                                                <MenuItem value={1}> (706) 678-2255 (father)</MenuItem>
+                                                <MenuItem value={2}> (706) 678-2255 (mother)</MenuItem>
+                                                <MenuItem value={3}> (706) 678-2255 (brother)</MenuItem>
                                             </Select>
                                         </Typography>
                                     </Stack>
@@ -497,41 +502,25 @@ const Traders = () => {
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Providers:&nbsp;&nbsp;
-                                <FormControl sx={{ m: 0, width: 300 }}>
-                                    <Select
-                                        multiple
-                                        displayEmpty
-                                        value={providerInfo}
-                                        onChange={providerChange}
-                                        renderValue={(selected) => {
-                                            if (selected.length === 0) {
-                                                return <em>NKDA</em>;
-                                            }
-
-                                            return selected.join(', ');
-                                        }}
-                                        input={<OutlinedInput sx={{ color: 'rgb(130 171 183/1)' }} />}
-                                        MenuProps={MenuProps}
-                                        inputProps={{ 'aria-label': 'Without label' }}
-                                    >
-                                        {providerNames.map((name) => (
-                                            <MenuItem
-                                                key={name}
-                                                value={name}
-                                                style={getStyles(name, personName, theme)}
-                                            >
-                                                {name}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={providerInfo}
+                                    onChange={providerChange}
+                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
+                                >
+                                    <MenuItem value={1}>John Smith, M.D. (Internal Medicine)</MenuItem>
+                                    <MenuItem value={2}>Zack Jones, M.D. (Cardiology)</MenuItem>
+                                    <MenuItem value={3}>CSRA (home health)</MenuItem>
+                                    <MenuItem value={4}>Care South (hospice)</MenuItem>
+                                </Select>
                             </Typography>
                         </Stack>
                     </Grid>
                     <Grid item lg={2} md={6} xs={12} >
                         <Stack sx={{ paddingTop: 6 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex', flexDirection: 'row' }}>
-                                Weight:
+                                Weight:&nbsp;&nbsp;
                                 {weightBlue ?
                                     <>
                                         <TextField
@@ -565,7 +554,7 @@ const Traders = () => {
                                             size="small"
                                             value={fitValue}
                                             onChange={(e) => {
-                                                if (e.target.value >= 3 && e.target.value <= 10) {
+                                                if (e.target.value >= 0 && e.target.value <= 10) {
                                                     setFitValue(e.target.value)
                                                 }
                                             }}
@@ -598,7 +587,7 @@ const Traders = () => {
                             </Typography>
 
                             <Typography aria-describedby={id} gutterBottom onClick={handleClick} sx={{ color: 'rgb(130 171 183/1)' }}>
-                                CrCl:{Number(CrCl).toFixed(1)} - {crclInfo}
+                                CrCl:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{Number(CrCl).toFixed(1)} - {crclInfo}
                             </Typography>
                             <Popover
                                 id={id}
@@ -643,9 +632,56 @@ const Traders = () => {
                                     />mg/dl
                                 </Typography>
                             </Popover>
-                            <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
-                                BMI:&nbsp;&nbsp;{bmi}&nbsp;&nbsp;{info}
+                            <Typography aria-describedby={BMIid} onClick={bmihandleClick} gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
+                                BMI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{bmi}&nbsp;&nbsp;{info}
                             </Typography>
+                            <Popover
+                                id={BMIid}
+                                open={bmiopen}
+                                anchorEl={bmianchorel}
+                                onClose={bmihandleClose}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                            >
+                                <Typography gutterBottom sx={{
+                                    color: 'rgb(130 171 183/1)',
+                                    margin: "0px !important",
+                                    bgcolor: '#003847',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    padding: 1,
+                                    paddingBottom: 0,
+                                    borderBottom: '1px solid rgb(130 171 183/1)',
+                                    justifyContent: 'space-between'
+                                }}>
+                                    <TextField
+                                        id="outlined-number"
+                                        size="small"
+                                        disabled
+                                        value={weightValue}
+                                    />lbs
+                                </Typography>
+                                <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', margin: "0px !important", bgcolor: '#003847', display: 'flex', alignItems: 'center', padding: 1, paddingBottom: 0, justifyContent: 'space-between' }}>
+                                    <TextField
+                                        id="outlined-number"
+                                        size="small"
+                                        disabled
+                                        value={fitValue * 12 + inchValue}
+                                    />inch
+                                </Typography>
+                                <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', margin: "0px !important", bgcolor: '#003847', display: 'flex', alignItems: 'center', padding: 0, flexDirection: 'column' }}>
+                                    <Slider
+                                        size="small"
+                                        max={50}
+                                        value={bmi}
+                                        aria-label="Small"
+                                        valueLabelDisplay="auto"
+                                    />
+                                    <img src={ICD10code} alt="" />
+                                </Typography>
+                            </Popover>
                         </Stack>
                     </Grid>
                     <Grid item lg={2} md={6} xs={12}>
@@ -717,6 +753,7 @@ const Traders = () => {
                                         <MenuItem value={3}> Consult Note</MenuItem>
                                         <MenuItem value={4}>Correspondence</MenuItem>
                                         <MenuItem value={5}>Televisit</MenuItem>
+                                        <MenuItem value={6}>Discharge Summary</MenuItem>
 
                                     </Select>
                                 </Button>

@@ -95,3 +95,7 @@ fieldset {
 svg {
   color: #90caf9 !important;
 }
+
+.Mui-disabled {
+  padding: 0px !important
+}
