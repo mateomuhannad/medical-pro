@@ -2,6 +2,7 @@ import * as React from 'react';
 import VitalsTable from './vitalsTable';
 import Editor from './editor';
 import { useState, useEffect } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 import {
     Button,
@@ -16,7 +17,8 @@ import {
     Box,
     Typography,
     Select,
-    MenuItem
+    MenuItem,
+    FormControl
 } from '@mui/material';
 
 import PinDropIcon from '@mui/icons-material/PinDrop';
@@ -29,6 +31,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import OutlinedInput from '@mui/material/OutlinedInput';
 
 import Card from '@mui/material/Card';
 import { Stack } from '@mui/system';
@@ -54,8 +57,43 @@ const LocationTool = {
     },
 };
 
+const AllergieNames = [
+    'Allergy1',
+    'Allergy2',
+    'Allergy3',
+    'Allergy4',
+    'Allergy5',
+    'Allergy6',
+];
+
+const providerNames = [
+    'John Smith, M.D. (Internal Medicine)',
+    'Zack Jones, M.D. (Cardiology)',
+    'CSRA (home health)',
+    'Care South (hospice)'
+
+]
+
+const phramacieNames = [
+    'Pharmacies1',
+    'Pharmacies2',
+    'Pharmacies3',
+    'Pharmacies4',
+    'Pharmacies5'
+]
+
+function getStyles(name, personName, theme) {
+    return {
+        fontWeight:
+            personName.indexOf(name) === -1
+                ? theme.typography.fontWeightRegular
+                : theme.typography.fontWeightMedium,
+    };
+}
+
 
 const Traders = () => {
+    const theme = useTheme();
 
     const [contactInfo, setContactInfo] = useState(10);
 
@@ -85,24 +123,26 @@ const Traders = () => {
     const [weightBlue, setWeightBlue] = useState(false);
     const [fitValue, setFitValue] = useState(3);
     const [inchValue, setInchValue] = useState(4);
-    const [personName, setPersonName] = useState([1]);
+    const [personName, setPersonName] = useState([]);
 
     const AllergiesChange = (event) => {
         const {
             target: { value },
         } = event;
         setPersonName(
+            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
 
-    const [phramacieperson, setPhramacieperson] = useState([1]);
+    const [phramacieperson, setPhramacieperson] = useState([]);
 
     const PharmacieChange = (event) => {
         const {
             target: { value },
         } = event;
         setPhramacieperson(
+            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
@@ -156,13 +196,14 @@ const Traders = () => {
         setDateValue(newValue);
     };
 
-    const [providerInfo, setProviderInfo] = useState([1]);
+    const [providerInfo, setProviderInfo] = useState([]);
 
     const providerChange = (event) => {
         const {
             target: { value },
         } = event;
         setProviderInfo(
+            // On autofill we get a stringified value.
             typeof value === 'string' ? value.split(',') : value,
         );
     };
@@ -232,17 +273,18 @@ const Traders = () => {
         setCrCl(crclInfoVal);
 
         if (crclInfoVal < 15) {
-            setCrclInfo(" N18.5 Chronic kidney disease, stage 5");
+            setCrclInfo(" CKD S5(N18.5)");
         } else if (crclInfoVal > 15 && crclInfoVal <= 29) {
-            setCrclInfo("N18.4 Chronic kidney disease, stage 4");
+            setCrclInfo(" CKD S4(N18.4)");
         } else if (crclInfoVal > 30 && crclInfoVal < 44) {
-            setCrclInfo("N18.32 Chronic kidney disease, stage 3b");
+            setCrclInfo(" CKD S3b(N18.32)");
         } else if (crclInfoVal > 45 && crclInfoVal < 59) {
-            setCrclInfo("N18.31 Chronic kidney disease, stage 3a");
+            setCrclInfo(" CKD S3A(N18.31)");
         } else if (crclInfoVal > 60 && crclInfoVal < 89) {
-            setCrclInfo(" Chronic kidney disease, stage ");
+            setCrclInfo(" CKD S2(N18.2) ");
+
         } else if (crclInfoVal > 90) {
-            setCrclInfo("N18.1 Chronic kidney disease, stage 1");
+            setCrclInfo(" CKD S1(N18.1)");
         } else {
             setCrclInfo("End Stage Renal Disease");
         }
@@ -290,14 +332,11 @@ const Traders = () => {
                                         Brandy Hand (71 y/o WM)
                                     </Typography>
                                     <Stack direction={'row'}>
-                                        <Typography sx={{ color: '#31b8df' }}>DOB:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;11.24.1950</Typography>
-                                    </Stack>
-                                    <Stack direction={'row'}>
-                                        <Typography sx={{ color: '#31b8df' }}>Phone:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(285) 592-2235</Typography>
+                                        <Typography sx={{ color: '#31b8df' }}>DOB:</Typography><Typography sx={{ color: 'rgb(130 171 183/1)' }}> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;11.24.1950</Typography>
                                     </Stack>
                                     <Stack direction={'row'}>
                                         <Typography sx={{ color: '#31b8df' }}>Contact:</Typography>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;
                                         <Select
                                             labelId="demo-simple-select-label"
                                             id="demo-simple-select"
@@ -306,9 +345,9 @@ const Traders = () => {
                                             MenuProps={MenuProps}
                                             sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
                                         >
-                                            <MenuItem value={30}>M: (285) 592-2235</MenuItem>
-                                            <MenuItem value={10}>H: (859) 647-2947</MenuItem>
-                                            <MenuItem value={20}>W: 72342342342</MenuItem>
+                                            <MenuItem value={30}>(285) 592-2235 (mobile)</MenuItem>
+                                            <MenuItem value={10}>(859) 647-2947 (home)</MenuItem>
+                                            <MenuItem value={20}>(292) 880-1817 (work)</MenuItem>
                                         </Select>
                                     </Stack>
                                     <Stack direction={'row'}>
@@ -335,7 +374,7 @@ const Traders = () => {
                         />
                     </Grid>
                     <Grid item lg={1} md={2} xs={12}>
-                        <Stack sx={{ paddingTop: 4 }} p={2}>
+                        <Stack sx={{ paddingTop: 6 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 1° ins:&nbsp;&nbsp;
                                 <Select
@@ -393,64 +432,104 @@ const Traders = () => {
                         </Stack>
                     </Grid>
                     <Grid item lg={3} md={4} xs={12} >
-                        <Stack sx={{ paddingTop: 4 }} p={2}>
+                        <Stack sx={{ paddingTop: 6 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Allergies:&nbsp;&nbsp;
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={personName}
-                                    onChange={AllergiesChange}
-                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
-                                >
-                                    <MenuItem value={1}>Allergy1</MenuItem>
-                                    <MenuItem value={2}>Allergy2</MenuItem>
-                                    <MenuItem value={3}>Allergy3</MenuItem>
-                                    <MenuItem value={4}>Allergy4</MenuItem>
-                                    <MenuItem value={5}>Allergy5</MenuItem>
-                                    <MenuItem value={6}>Allergy6</MenuItem>
-                                    <MenuItem value={7}>Allergy7</MenuItem>
-                                </Select>
+                                <FormControl sx={{ m: 0, width: 300 }}>
+                                    <Select
+                                        multiple
+                                        displayEmpty
+                                        value={personName}
+                                        onChange={AllergiesChange}
+                                        renderValue={(selected) => {
+                                            if (selected.length === 0) {
+                                                return <em>NKDA</em>;
+                                            }
+
+                                            return selected.join(', ');
+                                        }}
+                                        input={<OutlinedInput sx={{ color: 'rgb(130 171 183/1)' }} />}
+                                        MenuProps={MenuProps}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                    >
+                                        {AllergieNames.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                                style={getStyles(name, personName, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Pharmacies:&nbsp;&nbsp;
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={phramacieperson}
-                                    onChange={PharmacieChange}
-                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
-                                >
-                                    <MenuItem value={1}>Pharmacies1</MenuItem>
-                                    <MenuItem value={2}>Pharmacies2</MenuItem>
-                                    <MenuItem value={3}>Pharmacies3</MenuItem>
-                                    <MenuItem value={4}>Pharmacies4</MenuItem>
-                                    <MenuItem value={5}>Pharmacies5</MenuItem>
-                                    <MenuItem value={6}>Pharmacies6</MenuItem>
-                                    <MenuItem value={7}>Pharmacies7</MenuItem>
-                                </Select>
+                                <FormControl sx={{ m: 0, width: 300 }}>
+                                    <Select
+                                        multiple
+                                        displayEmpty
+                                        value={phramacieperson}
+                                        onChange={PharmacieChange}
+                                        renderValue={(selected) => {
+                                            if (selected.length === 0) {
+                                                return <em>Select Pharmacies</em>;
+                                            }
+
+                                            return selected.join(', ');
+                                        }}
+                                        input={<OutlinedInput sx={{ color: 'rgb(130 171 183/1)' }} />}
+                                        MenuProps={MenuProps}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                    >
+                                        {phramacieNames.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                                style={getStyles(name, personName, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
                                 Providers:&nbsp;&nbsp;
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={providerInfo}
-                                    onChange={providerChange}
-                                    MenuProps={MenuProps}
-                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
-                                >
-                                    <MenuItem value={1}> John Smith, M.D. (Internal Medicine)</MenuItem>
-                                    <MenuItem value={2}> Zack Jones, M.D. (Cardiology)</MenuItem>
-                                    <MenuItem value={3}> CSRA (home health)</MenuItem>
-                                    <MenuItem value={4}>Care South (hospice)</MenuItem>
-                                </Select>
+                                <FormControl sx={{ m: 0, width: 300 }}>
+                                    <Select
+                                        multiple
+                                        displayEmpty
+                                        value={providerInfo}
+                                        onChange={providerChange}
+                                        renderValue={(selected) => {
+                                            if (selected.length === 0) {
+                                                return <em>NKDA</em>;
+                                            }
 
+                                            return selected.join(', ');
+                                        }}
+                                        input={<OutlinedInput sx={{ color: 'rgb(130 171 183/1)' }} />}
+                                        MenuProps={MenuProps}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                    >
+                                        {providerNames.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                                style={getStyles(name, personName, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Typography>
                         </Stack>
                     </Grid>
-                    <Grid item lg={3} md={6} xs={12} >
-                        <Stack sx={{ paddingTop: 4 }} p={2}>
+                    <Grid item lg={2} md={6} xs={12} >
+                        <Stack sx={{ paddingTop: 6 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex', flexDirection: 'row' }}>
                                 Weight:
                                 {weightBlue ?
@@ -461,7 +540,7 @@ const Traders = () => {
                                             size="small"
                                             value={weightValue}
                                             onChange={(e) => {
-                                                if (e.target.value >= 0) {
+                                                if (e.target.value >= 0 && e.target.value <= 350) {
                                                     setWeightValue(e.target.value)
                                                 }
                                             }}
@@ -486,7 +565,7 @@ const Traders = () => {
                                             size="small"
                                             value={fitValue}
                                             onChange={(e) => {
-                                                if (e.target.value >= 0) {
+                                                if (e.target.value >= 3 && e.target.value <= 10) {
                                                     setFitValue(e.target.value)
                                                 }
                                             }}
@@ -500,7 +579,7 @@ const Traders = () => {
                                             size="small"
                                             value={inchValue}
                                             onChange={(e) => {
-                                                if (e.target.value >= 0) {
+                                                if (e.target.value >= 3 && e.target.value <= 10) {
                                                     setInchValue(e.target.value)
                                                 }
                                             }}
@@ -519,10 +598,7 @@ const Traders = () => {
                             </Typography>
 
                             <Typography aria-describedby={id} gutterBottom onClick={handleClick} sx={{ color: 'rgb(130 171 183/1)' }}>
-                                CrCl:{CrCl}mL/min
-                            </Typography>
-                            <Typography sx={{ color: 'rgb(130 171 183/1)' }}>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{crclInfo}
+                                CrCl:{Number(CrCl).toFixed(1)} - {crclInfo}
                             </Typography>
                             <Popover
                                 id={id}
@@ -559,7 +635,10 @@ const Traders = () => {
                                         type="number"
                                         size="small"
                                         value={SrCr}
-                                        onChange={(e) => { setSrCr(e.target.value) }}
+                                        onChange={(e) => {
+                                            if (e.target.value > 0 && e.target.value <= 100)
+                                                setSrCr(e.target.value)
+                                        }}
                                         sx={{ width: '70px' }}
                                     />mg/dl
                                 </Typography>
@@ -577,7 +656,7 @@ const Traders = () => {
                                 <TextareaAutosize
                                     aria-label="minimum height"
                                     minRows={3}
-                                    style={{ width: 200, height: 150 }}
+                                    style={{ width: 200, height: 100, marginTop: 55 }}
                                 />
                             </>
                         }
