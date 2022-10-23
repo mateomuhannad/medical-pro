@@ -99,3 +99,29 @@ svg {
 .Mui-disabled {
   padding: 0px !important
 }
+
+.container {
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.small-box {
+  width: 40%;
+}
+
+.task {
+  border: 1px solid white;
+  margin: 10px;
+  height: 8vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dragged {
+  background-color: rgba(200, 200, 200, 0.3);
+  opacity: 0.5;
+  cursor: pointer;
+}

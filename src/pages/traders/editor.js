@@ -1,7 +1,7 @@
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
-export default function App() {
+const App = () => {
     return (
         <Editor
             toolbarClassName="toolbarClassName"
@@ -11,3 +11,5 @@ export default function App() {
         />
     );
 }
+
+export default App;

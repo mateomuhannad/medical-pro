@@ -1,6 +1,7 @@
 import * as React from 'react';
 import VitalsTable from './vitalsTable';
-import Editor from './editor';
+import TaskList from "./dragdropcomponent";
+import { TASKS } from "./Constants";
 import { useState, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 
@@ -13,7 +14,6 @@ import {
     Avatar,
     CardMedia,
     Popover,
-    TextareaAutosize,
     Box,
     Typography,
     Select,
@@ -74,6 +74,13 @@ const phramacieNames = [
     'Pharmacies3',
     'Pharmacies4',
     'Pharmacies5'
+]
+
+const providerNames = [
+    'John Smith, M.D. (Internal Medicine)',
+    'Zack Jones, M.D. (Cardiology)',
+    'CSRA (home health)',
+    'Care South (hospice)'
 ]
 
 function getStyles(name, personName, theme) {
@@ -190,16 +197,21 @@ const Traders = () => {
         setDateValue(newValue);
     };
 
-    const [providerInfo, setProviderInfo] = useState([1]);
+    const [providerInfo, setProviderInfo] = useState([]);
 
     const providerChange = (event) => {
-        setProviderInfo(event.target.value);
+        const {
+            target: { value },
+        } = event;
+        setProviderInfo(
+            // On autofill we get a stringified value.
+            typeof value === 'string' ? value.split(',') : value,
+        );
     };
 
     const [modelopen, setModelOpen] = useState(false);
-    const [editorstate, setModelEditor] = useState(false);
+
     const handleModelOpen = () => setModelOpen(!modelopen);
-    const handleEditor = () => setModelEditor(!editorstate);
 
     const questionAnswer = [
         {
@@ -244,20 +256,19 @@ const Traders = () => {
         ).toFixed(1);
         setBmi(val);
         if (val < 18.5) {
-            setInfo("UnderWeight");
+            setInfo(" - Underweight (R63.6)");
         } else if (val > 18.5 && val <= 24.9) {
-            setInfo("Healthy");
+            setInfo(" - Healthy");
         } else if (val > 24.9 && val < 30) {
-            setInfo("Overweight");
+            setInfo(" - Overweight (E66.3)");
         } else if (val > 30 && val < 40) {
-            setInfo("Obesity");
+            setInfo(" - Obesity (E66.09)");
         } else if (val > 40) {
-            setInfo("Morbid obesity");
+            setInfo("- Morbid obesity (E66.01)");
         } else {
             setInfo("Obese");
         }
-
-        let crclInfoVal = (weightValue * (140 - 71)) / (SrCr * 72);
+        let crclInfoVal = ((Math.floor(weightValue * 0.454) * (140 - 71))) / (SrCr * 72);
         setCrCl(crclInfoVal);
 
         if (crclInfoVal < 15) {
@@ -308,12 +319,6 @@ const Traders = () => {
     const bmiopen = Boolean(bmianchorel);
     const BMIid = bmiopen ? 'simple-popover' : undefined;
 
-
-
-    const [addstate, setAddstate] = useState(true);
-    const addHandleClick = () => {
-        setAddstate(!addstate);
-    }
     return (
         <>
             <Box component="main" sx={{ flexGrow: 1, paddingLeft: 2 }}>
@@ -439,7 +444,7 @@ const Traders = () => {
                     <Grid item lg={3} md={4} xs={12} >
                         <Stack sx={{ paddingTop: 6 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
-                                Allergies:&nbsp;&nbsp;
+                                Allergies:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <FormControl sx={{ m: 0, width: 300 }}>
                                     <Select
                                         multiple
@@ -501,23 +506,40 @@ const Traders = () => {
                                 </FormControl>
                             </Typography>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
-                                Providers:&nbsp;&nbsp;
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={providerInfo}
-                                    onChange={providerChange}
-                                    sx={{ color: 'rgb(130 171 183/1)', border: 'none', height: '24px', p: 0, margin: 0 }}
-                                >
-                                    <MenuItem value={1}>John Smith, M.D. (Internal Medicine)</MenuItem>
-                                    <MenuItem value={2}>Zack Jones, M.D. (Cardiology)</MenuItem>
-                                    <MenuItem value={3}>CSRA (home health)</MenuItem>
-                                    <MenuItem value={4}>Care South (hospice)</MenuItem>
-                                </Select>
+                                Providers:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                <FormControl sx={{ m: 0, width: 300 }}>
+                                    <Select
+                                        multiple
+                                        displayEmpty
+                                        value={providerInfo}
+                                        onChange={providerChange}
+                                        renderValue={(selected) => {
+                                            if (selected.length === 0) {
+                                                return <em>John Smith, M.D. (Internal Medicine)</em>;
+                                            }
+
+                                            return selected.join(', ');
+                                        }}
+                                        input={<OutlinedInput sx={{ color: 'rgb(130 171 183/1)' }} />}
+                                        MenuProps={MenuProps}
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                    >
+                                        {providerNames.map((name) => (
+                                            <MenuItem
+                                                key={name}
+                                                value={name}
+                                                style={getStyles(name, personName, theme)}
+                                            >
+                                                {name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Typography>
                         </Stack>
                     </Grid>
-                    <Grid item lg={2} md={6} xs={12} >
+                    <Grid item lg={3} md={6} xs={12} >
                         <Stack sx={{ paddingTop: 6 }} p={2}>
                             <Typography gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex', flexDirection: 'row' }}>
                                 Weight:&nbsp;&nbsp;
@@ -586,8 +608,10 @@ const Traders = () => {
                                 }
                             </Typography>
 
-                            <Typography aria-describedby={id} gutterBottom onClick={handleClick} sx={{ color: 'rgb(130 171 183/1)' }}>
+                            <Typography aria-describedby={id} gutterBottom onClick={handleClick} sx={{ color: 'rgb(130 171 183/1)', display: 'flex' }}>
                                 CrCl:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{Number(CrCl).toFixed(1)} - {crclInfo}
+                                &nbsp;&nbsp;&nbsp;
+                                <AddToPhotosIcon sx={{ color: 'rgb(130 171 183/1)', cursor: 'pointer' }} />
                             </Typography>
                             <Popover
                                 id={id}
@@ -632,8 +656,10 @@ const Traders = () => {
                                     />mg/dl
                                 </Typography>
                             </Popover>
-                            <Typography aria-describedby={BMIid} onClick={bmihandleClick} gutterBottom sx={{ color: 'rgb(130 171 183/1)' }}>
+                            <Typography aria-describedby={BMIid} onClick={bmihandleClick} gutterBottom sx={{ color: 'rgb(130 171 183/1)', display: 'flex' }}>
                                 BMI:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{bmi}&nbsp;&nbsp;{info}
+                                &nbsp;&nbsp;&nbsp;
+                                <AddToPhotosIcon sx={{ color: 'rgb(130 171 183/1)', cursor: 'pointer' }} />
                             </Typography>
                             <Popover
                                 id={BMIid}
@@ -683,19 +709,6 @@ const Traders = () => {
                                 </Typography>
                             </Popover>
                         </Stack>
-                    </Grid>
-                    <Grid item lg={2} md={6} xs={12}>
-                        {addstate ?
-                            <AddToPhotosIcon sx={{ color: 'rgb(130 171 183/1)', cursor: 'pointer', fontSize: 35, marginTop: 15 }} onClick={addHandleClick} /> :
-                            <>
-                                <AddToPhotosIcon sx={{ color: 'rgb(130 171 183/1)', cursor: 'pointer', fontSize: 35 }} onClick={addHandleClick} />
-                                <TextareaAutosize
-                                    aria-label="minimum height"
-                                    minRows={3}
-                                    style={{ width: 200, height: 100, marginTop: 55 }}
-                                />
-                            </>
-                        }
                     </Grid>
                 </Grid>
                 <Grid container spacing={1} paddingRight={2} paddingLeft={2} >
@@ -791,9 +804,7 @@ const Traders = () => {
                                         </Box>
                                     </Grid>
                                     <Grid item lg={9} md={8} xs={12} >
-                                        <Box sx={{ border: '1px solid rgb(0 75 95/1)', height: '100%', display: 'flex', justifyContent: 'center' }} p={2} >
-                                            <Typography>Problems Toolbar</Typography>
-                                        </Box>
+                                        <TaskList tasks={TASKS} />
                                     </Grid>
                                 </Grid>
                             </Stack>
@@ -847,14 +858,7 @@ const Traders = () => {
                     </Stack>
                 </Card>
             </Dialog>
-            <Dialog
-                open={editorstate}
-                onClose={handleEditor}
-            >
-                <Card sx={{ bgcolor: '#013644', border: 'none', overflow: 'auto' }}>
-                    <Editor />
-                </Card>
-            </Dialog>
+
         </>
     );
 }
